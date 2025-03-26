@@ -33,7 +33,7 @@ struct GameView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.numberPad)
                     .focused($isTextFieldFocused)
-                    .frame(width: 100)
+                    .frame(width: 140)
                     .multilineTextAlignment(.center)
                     .onAppear { isTextFieldFocused = true }
 
