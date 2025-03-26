@@ -9,7 +9,7 @@ import AVFoundation
 
 class SoundManager {
     static var audioPlayer: AVAudioPlayer?
-    
+
     static func playSound(named soundName: String) {
         if let path = Bundle.main.path(forResource: soundName, ofType: "mp3") {
             let url = URL(fileURLWithPath: path)

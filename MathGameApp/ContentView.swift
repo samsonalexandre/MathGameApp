@@ -8,81 +8,120 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = MathGameViewModel()
+    @State private var userProgress: Double = 0.2 // Fortschritt für Beispiel
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 5) {
+                Text("MatheMeister 🎓")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.center)
+
+                Image(systemName: "brain.head.profile")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .foregroundColor(.secondary)
+
+                Text("Wähle eine Kategorie:")
+                    .font(.title2)
+                    .bold()
+
+                VStack(spacing: 10) {
+                    NavigationLink(destination: GameView(selectedOperation: .addition)) {
+                        CategoryCard(icon: "plus.circle.fill", title: "Addition", color: .green, progress: userProgress)
+                    }
+                    NavigationLink(destination: GameView(selectedOperation: .subtraction)) {
+                        CategoryCard(icon: "minus.circle.fill", title: "Subtraktion", color: .red, progress: userProgress)
+                    }
+                    NavigationLink(destination: GameView(selectedOperation: .multiplication)) {
+                        CategoryCard(icon: "multiply.circle.fill", title: "Multiplikation", color: .purple, progress: userProgress)
+                    }
+                    NavigationLink(destination: GameView(selectedOperation: .division)) {
+                        CategoryCard(icon: "divide.circle.fill", title: "Division", color: .orange, progress: userProgress)
+                    }
+                }
+                
+                Spacer(minLength: 10)
+                
+                HStack {
+                    NavigationLink(destination: HighscoreView()) {
+                        BottomTab(icon: "trophy.fill", title: "Highscores")
+                    }
+                    Spacer()
+                    NavigationLink(destination: ProfileView()) {
+                        BottomTab(icon: "person.crop.circle", title: "Profil")
+                    }
+                }
+                .padding()
+            }
+            .padding()
+            .animation(.easeInOut, value: UUID())
+        }
+    }
+}
+
+/// Reusable Komponente für Kategorie-Karten
+struct CategoryCard: View {
+    var icon: String
+    var title: String
+    var color: Color
+    var progress: Double
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Mathe-Lernspiel 🎓")
-                .font(.largeTitle)
-                .bold()
-                .foregroundColor(.blue)
-
-            Text("\(viewModel.firstNumber) \(viewModel.operation.rawValue) \(viewModel.secondNumber) = ?")
-                .font(.title)
-                .bold()
+        HStack {
+            Image(systemName: icon)
+                .resizable()
+                .frame(width: 40, height: 40)
+                .foregroundColor(.white)
                 .padding()
-                .background(Color.yellow.opacity(0.3))
-                .cornerRadius(10)
-                .shadow(radius: 5)
-                .scaleEffect(viewModel.feedback == "Richtig! 🎉" ? 1.2 : 1.0)
-                .animation(.spring(), value: viewModel.feedback)
 
-            TextField("Deine Antwort", text: $viewModel.userAnswer)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .keyboardType(.numberPad)
-                .frame(width: 100)
-                .multilineTextAlignment(.center)
-
-            Button(action: { viewModel.checkAnswer() }) {
-                Text("Überprüfen")
-                    .padding()
-                    .frame(width: 150)
-                    .background(Color.blue)
+            VStack(alignment: .leading) {
+                Text(title)
+                    .font(.title2)
+                    .bold()
                     .foregroundColor(.white)
-                    .clipShape(Capsule())
-                    .shadow(radius: 3)
+                
+                ProgressView(value: progress)
+                    .progressViewStyle(LinearProgressViewStyle())
+                    .accentColor(.white)
             }
-            .scaleEffect(viewModel.feedback == "Richtig! 🎉" ? 1.1 : 1.0)
-            .animation(.easeIn, value: viewModel.feedback)
+            .padding(.trailing)
 
-            Text(viewModel.feedback)
-                .font(.headline)
-                .foregroundColor(viewModel.feedback.contains("Richtig") ? .green : .red)
-
-            HStack {
-                Text("Punkte: \(viewModel.score)")
-                    .font(.title2)
-                    .bold()
-                    .padding()
-                    .background(Color.green.opacity(0.2))
-                    .cornerRadius(10)
-
-                Text("Level: \(viewModel.level)")
-                    .font(.title2)
-                    .bold()
-                    .padding()
-                    .background(Color.orange.opacity(0.2))
-                    .cornerRadius(10)
-            }
-
-            Text("🏆 Highscore: \(viewModel.highScore)")
-                .font(.title3)
-                .bold()
-                .foregroundColor(.purple)
-
-            Text("⏳ Zeit: \(viewModel.timeRemaining)s")
-                .font(.headline)
-                .foregroundColor(.red)
+            Spacer()
         }
+        .frame(maxWidth: .infinity)
         .padding()
-        .alert(isPresented: $viewModel.gameOver) {
-            Alert(title: Text("Spiel beendet!"), message: Text("Punkte: \(viewModel.score)"), dismissButton: .default(Text("Neustart")) {
-                viewModel.score = 0
-                viewModel.level = 1
-                viewModel.generateNewQuestion()
-                viewModel.resetTimer()
-            })
+        .background(color)
+        .cornerRadius(12)
+        .shadow(radius: 3)
+    }
+}
+
+/// Reusable Komponente für die untere Navigationsleiste
+struct BottomTab: View {
+    var icon: String
+    var title: String
+
+    var body: some View {
+        VStack {
+            Image(systemName: icon)
+                .resizable()
+                .frame(width: 30, height: 30)
+                .foregroundColor(.primary)
+
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.primary)
         }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
 }
 
