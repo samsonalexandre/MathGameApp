@@ -16,7 +16,7 @@ class MathGameViewModel: ObservableObject {
     @Published var level: Int = 1
     @Published var feedback: String = ""
     @Published var highScore: Int = UserDefaults.standard.integer(forKey: "HighScore")
-    @Published var timeRemaining: Int = 10
+    @Published var timeRemaining: Int = 100
     @Published var gameOver: Bool = false
 
     var timer: Timer?
@@ -86,7 +86,7 @@ class MathGameViewModel: ObservableObject {
     }
 
     func resetTimer() {
-        timeRemaining = 10
+        timeRemaining = 100
         startTimer()
     }
 }
