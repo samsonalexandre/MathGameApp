@@ -13,7 +13,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 5) {
-                Text("MatheMeister 🎓")
+                Text("Mathe Meister 🎓")
                     .font(.largeTitle)
                     .bold()
                     .foregroundColor(.primary)
